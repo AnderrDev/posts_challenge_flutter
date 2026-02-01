@@ -7,7 +7,10 @@ import 'package:posts_challenge/features/posts/data/models/post_model.dart';
 import 'package:posts_challenge/features/posts/data/models/comment_model.dart';
 
 abstract interface class PostsRemoteDatasource {
-  Future<Either<Failure, List<PostModel>>> fetchPosts();
+  Future<Either<Failure, List<PostModel>>> fetchPosts({
+    int page = 1,
+    int limit = 10,
+  });
   Future<Either<Failure, List<CommentModel>>> fetchCommentsByPost(int postId);
 }
 
@@ -17,8 +20,14 @@ class PostsRemoteDatasourceImpl implements PostsRemoteDatasource {
   final HttpClient _client;
 
   @override
-  Future<Either<Failure, List<PostModel>>> fetchPosts() async {
-    final res = await _client.getList(Endpoints.posts);
+  Future<Either<Failure, List<PostModel>>> fetchPosts({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final res = await _client.getList(
+      Endpoints.posts,
+      queryParameters: {'_page': page, '_limit': limit},
+    );
 
     return res.map((list) {
       final mapped = list

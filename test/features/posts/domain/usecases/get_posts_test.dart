@@ -32,13 +32,16 @@ void main() {
   test('should get posts from the repository', () async {
     // arrange
     when(
-      mockPostsRepository.getPosts(),
+      mockPostsRepository.getPosts(
+        page: anyNamed('page'),
+        limit: anyNamed('limit'),
+      ),
     ).thenAnswer((_) async => const Right(tPosts));
     // act
     final result = await usecase();
     // assert
     expect(result, const Right(tPosts));
-    verify(mockPostsRepository.getPosts());
+    verify(mockPostsRepository.getPosts(page: 1, limit: 10));
     verifyNoMoreInteractions(mockPostsRepository);
   });
 
@@ -53,7 +56,7 @@ void main() {
       final result = await usecase();
       // assert
       expect(result, Left(ServerFailure()));
-      verify(mockPostsRepository.getPosts());
+      verify(mockPostsRepository.getPosts(page: 1, limit: 10));
       verifyNoMoreInteractions(mockPostsRepository);
     },
   );

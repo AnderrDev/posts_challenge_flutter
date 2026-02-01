@@ -22,9 +22,25 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
   final TogglePostLike _togglePostLike;
 
   Future<void> _onFetchPosts(FetchPosts event, Emitter<PostsState> emit) async {
-    emit(state.copyWith(status: PostsStatus.loading, errorMessage: null));
+    if (state.hasReachedMax && !event.refresh) return;
 
-    final result = await _getPosts();
+    if (event.refresh) {
+      emit(
+        state.copyWith(
+          status: PostsStatus.loading,
+          posts: [],
+          filtered: [],
+          page: 1,
+          hasReachedMax: false,
+          errorMessage: null,
+        ),
+      );
+    } else {
+      if (state.status == PostsStatus.loading) return;
+      emit(state.copyWith(status: PostsStatus.loading, errorMessage: null));
+    }
+
+    final result = await _getPosts(page: state.page, limit: 10);
 
     result.fold(
       (failure) => emit(
@@ -33,14 +49,23 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
           errorMessage: _mapFailure(failure),
         ),
       ),
-      (posts) => emit(
-        state.copyWith(
-          status: PostsStatus.success,
-          posts: posts,
-          filtered: _applyQuery(posts, state.query),
-          errorMessage: null,
-        ),
-      ),
+      (newPosts) {
+        final allPosts = event.refresh
+            ? newPosts
+            : [...state.posts, ...newPosts];
+        final reachedMax = newPosts.length < 10;
+
+        emit(
+          state.copyWith(
+            status: PostsStatus.success,
+            posts: allPosts,
+            filtered: _applyQuery(allPosts, state.query),
+            page: state.page + 1,
+            hasReachedMax: reachedMax,
+            errorMessage: null,
+          ),
+        );
+      },
     );
   }
 

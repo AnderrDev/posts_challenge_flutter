@@ -38,7 +38,12 @@ void main() {
       'should return a list of PostModel when the response is successful',
       () async {
         // arrange
-        when(mockHttpClient.getList(any)).thenAnswer(
+        when(
+          mockHttpClient.getList(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenAnswer(
           (_) async => const Right([
             {"userId": 1, "id": 1, "title": "test title", "body": "test body"},
           ]),
@@ -47,19 +52,33 @@ void main() {
         final result = await datasource.fetchPosts();
         // assert
         expect(result.fold((l) => null, (r) => r), tPostModelList);
-        verify(mockHttpClient.getList(Endpoints.posts));
+        verify(
+          mockHttpClient.getList(
+            Endpoints.posts,
+            queryParameters: {'_page': 1, '_limit': 10},
+          ),
+        );
       },
     );
 
     test('should return a Failure when the response is unsuccessful', () async {
       // arrange
       when(
-        mockHttpClient.getList(any),
+        mockHttpClient.getList(
+          any,
+          queryParameters: anyNamed('queryParameters'),
+        ),
       ).thenAnswer((_) async => Left(ServerFailure()));
       // act
       final result = await datasource.fetchPosts();
       // assert
       expect(result, Left(ServerFailure()));
+      verify(
+        mockHttpClient.getList(
+          Endpoints.posts,
+          queryParameters: {'_page': 1, '_limit': 10},
+        ),
+      );
     });
   });
 
@@ -70,7 +89,12 @@ void main() {
       'should return a list of CommentModel when the response is successful',
       () async {
         // arrange
-        when(mockHttpClient.getList(any)).thenAnswer(
+        when(
+          mockHttpClient.getList(
+            any,
+            queryParameters: anyNamed('queryParameters'),
+          ),
+        ).thenAnswer(
           (_) async => const Right([
             {
               "postId": 1,
@@ -92,12 +116,16 @@ void main() {
     test('should return a Failure when the response is unsuccessful', () async {
       // arrange
       when(
-        mockHttpClient.getList(any),
+        mockHttpClient.getList(
+          any,
+          queryParameters: anyNamed('queryParameters'),
+        ),
       ).thenAnswer((_) async => Left(ServerFailure()));
       // act
       final result = await datasource.fetchCommentsByPost(tPostId);
       // assert
       expect(result, Left(ServerFailure()));
+      verify(mockHttpClient.getList(Endpoints.commentsByPost(tPostId)));
     });
   });
 }

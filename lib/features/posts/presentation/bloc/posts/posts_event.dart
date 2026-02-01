@@ -10,7 +10,11 @@ sealed class PostsEvent extends Equatable {
 }
 
 final class FetchPosts extends PostsEvent {
-  const FetchPosts();
+  const FetchPosts({this.refresh = false});
+  final bool refresh;
+
+  @override
+  List<Object?> get props => [refresh];
 }
 
 final class SearchChanged extends PostsEvent {

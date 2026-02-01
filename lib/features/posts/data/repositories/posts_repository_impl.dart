@@ -14,8 +14,11 @@ class PostsRepositoryImpl implements PostsRepository {
   final PostsLocalDataSource _local;
 
   @override
-  Future<Either<Failure, List<PostEntity>>> getPosts() async {
-    final res = await _remote.fetchPosts();
+  Future<Either<Failure, List<PostEntity>>> getPosts({
+    int page = 1,
+    int limit = 10,
+  }) async {
+    final res = await _remote.fetchPosts(page: page, limit: limit);
 
     return res.fold((failure) => Left(failure), (models) async {
       try {

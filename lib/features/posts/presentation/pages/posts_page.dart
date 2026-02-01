@@ -8,8 +8,42 @@ import 'package:posts_challenge/features/posts/presentation/bloc/posts/posts_sta
 import 'package:posts_challenge/features/posts/presentation/widgets/post_list_item.dart';
 import 'package:posts_challenge/features/posts/presentation/widgets/search_bar.dart';
 
-class PostsPage extends StatelessWidget {
+class PostsPage extends StatefulWidget {
   const PostsPage({super.key});
+
+  @override
+  State<PostsPage> createState() => _PostsPageState();
+}
+
+class _PostsPageState extends State<PostsPage> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController
+      ..removeListener(_onScroll)
+      ..dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_isBottom) {
+      context.read<PostsBloc>().add(const FetchPosts());
+    }
+  }
+
+  bool get _isBottom {
+    if (!_scrollController.hasClients) return false;
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,22 +65,36 @@ class PostsPage extends StatelessWidget {
             child: BlocBuilder<PostsBloc, PostsState>(
               builder: (context, state) {
                 switch (state.status) {
-                  case PostsStatus.loading:
+                  case PostsStatus.loading when state.posts.isEmpty:
                     return const Center(child: CircularProgressIndicator());
 
-                  case PostsStatus.failure:
+                  case PostsStatus.failure when state.posts.isEmpty:
                     return Center(child: Text(state.errorMessage ?? 'Error'));
 
                   case PostsStatus.success:
+                  case PostsStatus.failure:
+                  case PostsStatus.loading:
                     if (state.filtered.isEmpty) {
                       return const Center(child: Text('No hay resultados'));
                     }
                     return ListView.separated(
+                      controller: _scrollController,
                       physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.all(16),
-                      itemCount: state.filtered.length,
+                      itemCount: state.hasReachedMax
+                          ? state.filtered.length
+                          : state.filtered.length + 1,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
+                        if (index >= state.filtered.length) {
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+
                         final post = state.filtered[index];
 
                         return PostListItem(

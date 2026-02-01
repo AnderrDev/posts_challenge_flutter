@@ -58,58 +58,68 @@ void main() {
   blocTest<PostsBloc, PostsState>(
     'emits [loading, success] when FetchPosts is added and returns posts',
     build: () {
-      when(mockGetPosts()).thenAnswer((_) async => const Right([tPost]));
+      when(
+        mockGetPosts(page: anyNamed('page'), limit: anyNamed('limit')),
+      ).thenAnswer((_) async => const Right([tPost]));
       return bloc;
     },
     act: (bloc) => bloc.add(const FetchPosts()),
-    expect:
-        () => [
-          const PostsState(
-            status: PostsStatus.loading,
-            posts: [],
-            filtered: [],
-            query: '',
-            errorMessage: null,
-          ),
-          const PostsState(
-            status: PostsStatus.success,
-            posts: [tPost],
-            filtered: [tPost],
-            query: '',
-            errorMessage: null,
-          ),
-        ],
+    expect: () => [
+      const PostsState(
+        status: PostsStatus.loading,
+        posts: [],
+        filtered: [],
+        query: '',
+        errorMessage: null,
+        hasReachedMax: false,
+        page: 1,
+      ),
+      const PostsState(
+        status: PostsStatus.success,
+        posts: [tPost],
+        filtered: [tPost],
+        query: '',
+        errorMessage: null,
+        hasReachedMax: true,
+        page: 2,
+      ),
+    ],
     verify: (_) {
-      verify(mockGetPosts());
+      verify(mockGetPosts(page: 1, limit: 10));
     },
   );
 
   blocTest<PostsBloc, PostsState>(
     'emits [loading, failure] when FetchPosts is added and returns failure',
     build: () {
-      when(mockGetPosts()).thenAnswer((_) async => Left(ServerFailure()));
+      when(
+        mockGetPosts(page: anyNamed('page'), limit: anyNamed('limit')),
+      ).thenAnswer((_) async => Left(ServerFailure()));
       return bloc;
     },
     act: (bloc) => bloc.add(const FetchPosts()),
-    expect:
-        () => [
-          const PostsState(
-            status: PostsStatus.loading,
-            posts: [],
-            filtered: [],
-            query: '',
-            errorMessage: null,
-          ),
-          const PostsState(
-            status: PostsStatus.failure,
-            posts: [],
-            filtered: [],
-            query: '',
-            errorMessage: 'Server error',
-          ),
-        ],
+    expect: () => [
+      const PostsState(
+        status: PostsStatus.loading,
+        posts: [],
+        filtered: [],
+        query: '',
+        errorMessage: null,
+        hasReachedMax: false,
+        page: 1,
+      ),
+      const PostsState(
+        status: PostsStatus.failure,
+        posts: [],
+        filtered: [],
+        query: '',
+        errorMessage: 'Server error',
+        hasReachedMax: false,
+        page: 1,
+      ),
+    ],
     verify: (_) {
-      verify(mockGetPosts());
+      verify(mockGetPosts(page: 1, limit: 10));
     },
   );
 
@@ -124,28 +134,32 @@ void main() {
       // We can use `seed` parameter in blocTest if we want initial state different from initial.
       // But `bloc` is created in `build`.
       // Let's rely on FetchPosts first.
-      when(mockGetPosts()).thenAnswer((_) async => const Right([tPost]));
+      when(
+        mockGetPosts(page: anyNamed('page'), limit: anyNamed('limit')),
+      ).thenAnswer((_) async => const Right([tPost]));
       return bloc;
     },
-    seed:
-        () => const PostsState(
-          status: PostsStatus.success,
-          posts: [tPost],
-          filtered: [tPost],
-          query: '',
-          errorMessage: null,
-        ),
+    seed: () => const PostsState(
+      status: PostsStatus.success,
+      posts: [tPost],
+      filtered: [tPost],
+      query: '',
+      errorMessage: null,
+      hasReachedMax: true,
+      page: 2,
+    ),
     act: (bloc) => bloc.add(const SearchChanged('invalid')),
-    expect:
-        () => [
-          const PostsState(
-            status: PostsStatus.success,
-            posts: [tPost],
-            filtered: [],
-            query: 'invalid',
-            errorMessage: null,
-          ),
-        ],
+    expect: () => [
+      const PostsState(
+        status: PostsStatus.success,
+        posts: [tPost],
+        filtered: [],
+        query: 'invalid',
+        errorMessage: null,
+        hasReachedMax: true,
+        page: 2,
+      ),
+    ],
   );
 
   blocTest<PostsBloc, PostsState>(
@@ -154,25 +168,27 @@ void main() {
       when(mockTogglePostLike(any)).thenAnswer((_) async => const Right(null));
       return bloc;
     },
-    seed:
-        () => const PostsState(
-          status: PostsStatus.success,
-          posts: [tPost],
-          filtered: [tPost],
-          query: '',
-          errorMessage: null,
-        ),
+    seed: () => const PostsState(
+      status: PostsStatus.success,
+      posts: [tPost],
+      filtered: [tPost],
+      query: '',
+      errorMessage: null,
+      hasReachedMax: true,
+      page: 2,
+    ),
     act: (bloc) => bloc.add(const LikeToggled(tPost)),
-    expect:
-        () => [
-          const PostsState(
-            status: PostsStatus.success,
-            posts: [tPostLiked],
-            filtered: [tPostLiked],
-            query: '',
-            errorMessage: null,
-          ),
-        ],
+    expect: () => [
+      const PostsState(
+        status: PostsStatus.success,
+        posts: [tPostLiked],
+        filtered: [tPostLiked],
+        query: '',
+        errorMessage: null,
+        hasReachedMax: true,
+        page: 2,
+      ),
+    ],
     verify: (_) {
       verify(mockTogglePostLike(tPost.id));
     },
@@ -186,32 +202,36 @@ void main() {
       ).thenAnswer((_) async => Left(ServerFailure()));
       return bloc;
     },
-    seed:
-        () => const PostsState(
-          status: PostsStatus.success,
-          posts: [tPost],
-          filtered: [tPost],
-          query: '',
-          errorMessage: null,
-        ),
+    seed: () => const PostsState(
+      status: PostsStatus.success,
+      posts: [tPost],
+      filtered: [tPost],
+      query: '',
+      errorMessage: null,
+      hasReachedMax: true,
+      page: 2,
+    ),
     act: (bloc) => bloc.add(const LikeToggled(tPost)),
-    expect:
-        () => [
-          const PostsState(
-            status: PostsStatus.success,
-            posts: [tPostLiked],
-            filtered: [tPostLiked],
-            query: '',
-            errorMessage: null,
-          ),
-          const PostsState(
-            status: PostsStatus.success,
-            posts: [tPost],
-            filtered: [tPost],
-            query: '',
-            errorMessage: null,
-          ),
-        ],
+    expect: () => [
+      const PostsState(
+        status: PostsStatus.success,
+        posts: [tPostLiked],
+        filtered: [tPostLiked],
+        query: '',
+        errorMessage: null,
+        hasReachedMax: true,
+        page: 2,
+      ),
+      const PostsState(
+        status: PostsStatus.success,
+        posts: [tPost],
+        filtered: [tPost],
+        query: '',
+        errorMessage: null,
+        hasReachedMax: true,
+        page: 2,
+      ),
+    ],
     verify: (_) {
       verify(mockTogglePostLike(tPost.id));
     },

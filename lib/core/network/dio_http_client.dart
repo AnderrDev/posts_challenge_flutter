@@ -9,9 +9,12 @@ class DioHttpClient implements HttpClient {
   final Dio _dio;
 
   @override
-  Future<Either<Failure, List<dynamic>>> getList(String path) async {
+  Future<Either<Failure, List<dynamic>>> getList(
+    String path, {
+    Map<String, dynamic>? queryParameters,
+  }) async {
     try {
-      final res = await _dio.get(path);
+      final res = await _dio.get(path, queryParameters: queryParameters);
       final data = res.data;
 
       if (data is List<dynamic>) {

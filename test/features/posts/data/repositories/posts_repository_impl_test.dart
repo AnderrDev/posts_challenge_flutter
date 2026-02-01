@@ -60,13 +60,16 @@ void main() {
       () async {
         // arrange
         when(
-          mockRemote.fetchPosts(),
+          mockRemote.fetchPosts(
+            page: anyNamed('page'),
+            limit: anyNamed('limit'),
+          ),
         ).thenAnswer((_) async => const Right([tPostModel]));
         when(mockLocal.getLikedPostIds()).thenAnswer((_) async => []);
         // act
         final result = await repository.getPosts();
         // assert
-        verify(mockRemote.fetchPosts());
+        verify(mockRemote.fetchPosts(page: 1, limit: 10));
         verify(mockLocal.getLikedPostIds());
         expect(result.fold((l) => null, (r) => r), [tPostEntity]);
       },
@@ -77,13 +80,16 @@ void main() {
       () async {
         // arrange
         when(
-          mockRemote.fetchPosts(),
+          mockRemote.fetchPosts(
+            page: anyNamed('page'),
+            limit: anyNamed('limit'),
+          ),
         ).thenAnswer((_) async => const Right([tPostModel]));
         when(mockLocal.getLikedPostIds()).thenAnswer((_) async => ['1']);
         // act
         final result = await repository.getPosts();
         // assert
-        verify(mockRemote.fetchPosts());
+        verify(mockRemote.fetchPosts(page: 1, limit: 10));
         verify(mockLocal.getLikedPostIds());
         expect(result.fold((l) => null, (r) => r), [tPostEntityLiked]);
       },
@@ -92,12 +98,12 @@ void main() {
     test('should return Failure when remote call fails', () async {
       // arrange
       when(
-        mockRemote.fetchPosts(),
+        mockRemote.fetchPosts(page: anyNamed('page'), limit: anyNamed('limit')),
       ).thenAnswer((_) async => Left(ServerFailure()));
       // act
       final result = await repository.getPosts();
       // assert
-      verify(mockRemote.fetchPosts());
+      verify(mockRemote.fetchPosts(page: 1, limit: 10));
       verifyZeroInteractions(mockLocal);
       expect(result, Left(ServerFailure()));
     });

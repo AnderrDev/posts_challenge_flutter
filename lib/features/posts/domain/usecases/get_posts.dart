@@ -9,7 +9,10 @@ class GetPosts {
 
   final PostsRepository _repository;
 
-  Future<Either<Failure, List<PostEntity>>> call() {
-    return _repository.getPosts();
+  Future<Either<Failure, List<PostEntity>>> call({
+    int page = 1,
+    int limit = 10,
+  }) {
+    return _repository.getPosts(page: page, limit: limit);
   }
 }

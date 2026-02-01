@@ -43,14 +43,20 @@ class MockPostsRemoteDatasource extends _i1.Mock
   }
 
   @override
-  _i3.Future<_i4.Either<_i5.Failure, List<_i6.PostModel>>> fetchPosts() =>
+  _i3.Future<_i4.Either<_i5.Failure, List<_i6.PostModel>>> fetchPosts({
+    int? page = 1,
+    int? limit = 10,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#fetchPosts, []),
+            Invocation.method(#fetchPosts, [], {#page: page, #limit: limit}),
             returnValue:
                 _i3.Future<_i4.Either<_i5.Failure, List<_i6.PostModel>>>.value(
                   _i7.dummyValue<_i4.Either<_i5.Failure, List<_i6.PostModel>>>(
                     this,
-                    Invocation.method(#fetchPosts, []),
+                    Invocation.method(#fetchPosts, [], {
+                      #page: page,
+                      #limit: limit,
+                    }),
                   ),
                 ),
           )

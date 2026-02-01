@@ -35,14 +35,25 @@ class MockHttpClient extends _i1.Mock implements _i2.HttpClient {
   }
 
   @override
-  _i3.Future<_i4.Either<_i5.Failure, List<dynamic>>> getList(String? path) =>
+  _i3.Future<_i4.Either<_i5.Failure, List<dynamic>>> getList(
+    String? path, {
+    Map<String, dynamic>? queryParameters,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getList, [path]),
+            Invocation.method(
+              #getList,
+              [path],
+              {#queryParameters: queryParameters},
+            ),
             returnValue:
                 _i3.Future<_i4.Either<_i5.Failure, List<dynamic>>>.value(
                   _i6.dummyValue<_i4.Either<_i5.Failure, List<dynamic>>>(
                     this,
-                    Invocation.method(#getList, [path]),
+                    Invocation.method(
+                      #getList,
+                      [path],
+                      {#queryParameters: queryParameters},
+                    ),
                   ),
                 ),
           )

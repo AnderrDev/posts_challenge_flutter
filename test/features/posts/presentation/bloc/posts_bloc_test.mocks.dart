@@ -40,14 +40,17 @@ class MockGetPosts extends _i1.Mock implements _i2.GetPosts {
   }
 
   @override
-  _i3.Future<_i4.Either<_i5.Failure, List<_i6.PostEntity>>> call() =>
+  _i3.Future<_i4.Either<_i5.Failure, List<_i6.PostEntity>>> call({
+    int? page = 1,
+    int? limit = 10,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#call, []),
+            Invocation.method(#call, [], {#page: page, #limit: limit}),
             returnValue:
                 _i3.Future<_i4.Either<_i5.Failure, List<_i6.PostEntity>>>.value(
                   _i7.dummyValue<_i4.Either<_i5.Failure, List<_i6.PostEntity>>>(
                     this,
-                    Invocation.method(#call, []),
+                    Invocation.method(#call, [], {#page: page, #limit: limit}),
                   ),
                 ),
           )
