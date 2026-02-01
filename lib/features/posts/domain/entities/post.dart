@@ -1,13 +1,36 @@
-class Post {
-  const Post({
-    required this.userId,
-    required this.id,
-    required this.title,
-    required this.body,
-  });
+import 'package:equatable/equatable.dart';
 
-  final int userId;
+class PostEntity extends Equatable {
   final int id;
+  final int userId;
   final String title;
   final String body;
+  final bool isLiked; // Añadido para lógica de negocio local
+
+  const PostEntity({
+    required this.id,
+    required this.userId,
+    required this.title,
+    required this.body,
+    this.isLiked = false,
+  });
+
+  PostEntity copyWith({
+    int? id,
+    int? userId,
+    String? title,
+    String? body,
+    bool? isLiked,
+  }) {
+    return PostEntity(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      title: title ?? this.title,
+      body: body ?? this.body,
+      isLiked: isLiked ?? this.isLiked,
+    );
+  }
+
+  @override
+  List<Object?> get props => [id, userId, title, body, isLiked];
 }

@@ -10,7 +10,6 @@ class PostsState extends Equatable {
     required this.posts,
     required this.filtered,
     required this.query,
-    required this.likedIds,
     this.errorMessage,
   });
 
@@ -19,22 +18,19 @@ class PostsState extends Equatable {
       posts = const [],
       filtered = const [],
       query = '',
-      likedIds = const {},
       errorMessage = null;
 
   final PostsStatus status;
-  final List<Post> posts;
-  final List<Post> filtered;
+  final List<PostEntity> posts;
+  final List<PostEntity> filtered;
   final String query;
-  final Set<int> likedIds;
   final String? errorMessage;
 
   PostsState copyWith({
     PostsStatus? status,
-    List<Post>? posts,
-    List<Post>? filtered,
+    List<PostEntity>? posts,
+    List<PostEntity>? filtered,
     String? query,
-    Set<int>? likedIds,
     String? errorMessage,
   }) {
     return PostsState(
@@ -42,18 +38,10 @@ class PostsState extends Equatable {
       posts: posts ?? this.posts,
       filtered: filtered ?? this.filtered,
       query: query ?? this.query,
-      likedIds: likedIds ?? this.likedIds,
       errorMessage: errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [
-    status,
-    posts,
-    filtered,
-    query,
-    likedIds,
-    errorMessage,
-  ];
+  List<Object?> get props => [status, posts, filtered, query, errorMessage];
 }

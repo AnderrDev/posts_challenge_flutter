@@ -4,7 +4,7 @@ import 'package:posts_challenge/features/posts/domain/entities/comment.dart';
 class CommentsList extends StatelessWidget {
   const CommentsList({super.key, required this.comments});
 
-  final List<Comment> comments;
+  final List<CommentEntity> comments;
 
   @override
   Widget build(BuildContext context) {

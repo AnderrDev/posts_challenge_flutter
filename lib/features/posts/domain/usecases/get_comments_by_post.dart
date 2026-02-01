@@ -9,7 +9,7 @@ class GetCommentsByPost {
 
   final PostsRepository _repository;
 
-  Future<Either<Failure, List<Comment>>> call(int postId) {
+  Future<Either<Failure, List<CommentEntity>>> call(int postId) {
     return _repository.getCommentsByPost(postId);
   }
 }

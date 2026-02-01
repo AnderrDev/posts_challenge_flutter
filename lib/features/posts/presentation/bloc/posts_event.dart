@@ -23,7 +23,7 @@ final class SearchChanged extends PostsEvent {
 
 final class LikeToggled extends PostsEvent {
   const LikeToggled(this.post);
-  final Post post;
+  final PostEntity post;
 
   @override
   List<Object?> get props => [post];

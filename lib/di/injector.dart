@@ -11,9 +11,18 @@ import 'package:posts_challenge/features/posts/domain/repositories/posts_reposit
 import 'package:posts_challenge/features/posts/domain/usecases/get_comments_by_post.dart';
 import 'package:posts_challenge/features/posts/domain/usecases/get_posts.dart';
 
+import 'package:posts_challenge/features/posts/data/datasources/posts_local_datasource.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:posts_challenge/features/posts/domain/usecases/toggle_post_like.dart';
+
 final sl = GetIt.instance;
 
 Future<void> configureDependencies() async {
+  // External
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
+
   // Core: Dio + HttpClient (DIP)
   sl.registerLazySingleton<Dio>(() => buildDio());
   sl.registerLazySingleton<HttpClient>(() => DioHttpClient(sl<Dio>()));
@@ -22,10 +31,16 @@ Future<void> configureDependencies() async {
   sl.registerLazySingleton<PostsRemoteDatasource>(
     () => PostsRemoteDatasourceImpl(sl<HttpClient>()),
   );
+  sl.registerLazySingleton<PostsLocalDataSource>(
+    () => PostsLocalDataSourceImpl(sl<SharedPreferences>()),
+  );
 
   // Repositories
   sl.registerLazySingleton<PostsRepository>(
-    () => PostsRepositoryImpl(sl<PostsRemoteDatasource>()),
+    () => PostsRepositoryImpl(
+      sl<PostsRemoteDatasource>(),
+      sl<PostsLocalDataSource>(),
+    ),
   );
 
   // UseCases
@@ -33,9 +48,17 @@ Future<void> configureDependencies() async {
   sl.registerFactory<GetCommentsByPost>(
     () => GetCommentsByPost(sl<PostsRepository>()),
   );
+  sl.registerFactory<TogglePostLike>(
+    () => TogglePostLike(sl<PostsRepository>()),
+  );
 
   // Bloc
-  sl.registerFactory<PostsBloc>(() => PostsBloc(getPosts: sl<GetPosts>()));
+  sl.registerFactory<PostsBloc>(
+    () => PostsBloc(
+      getPosts: sl<GetPosts>(),
+      togglePostLike: sl<TogglePostLike>(),
+    ),
+  );
   sl.registerFactory<CommentsCubit>(
     () => CommentsCubit(getCommentsByPost: sl<GetCommentsByPost>()),
   );

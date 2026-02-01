@@ -37,11 +37,9 @@ class PostsPage extends StatelessWidget {
                       separatorBuilder: (_, __) => const Divider(height: 1),
                       itemBuilder: (context, index) {
                         final post = state.filtered[index];
-                        final isLiked = state.likedIds.contains(post.id);
 
                         return PostListItem(
                           post: post,
-                          isLiked: isLiked,
                           onTap: () {
                             context.push('/post/${post.id}', extra: post);
                           },

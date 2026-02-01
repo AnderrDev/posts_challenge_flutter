@@ -11,7 +11,7 @@ final appRouter = GoRouter(
       path: '/post/:id',
       builder: (context, state) {
         final extra = state.extra;
-        if (extra is! Post) {
+        if (extra is! PostEntity) {
           return const Scaffold(
             body: Center(child: Text('Post no encontrado (missing extra)')),
           );

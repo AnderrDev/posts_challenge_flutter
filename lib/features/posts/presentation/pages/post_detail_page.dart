@@ -12,7 +12,7 @@ import 'package:posts_challenge/features/posts/presentation/widgets/comments_lis
 class PostDetailPage extends StatelessWidget {
   const PostDetailPage({super.key, required this.post});
 
-  final Post post;
+  final PostEntity post;
 
   @override
   Widget build(BuildContext context) {
@@ -26,20 +26,29 @@ class PostDetailPage extends StatelessWidget {
 class _PostDetailView extends StatelessWidget {
   const _PostDetailView({required this.post});
 
-  final Post post;
+  final PostEntity post;
 
   @override
   Widget build(BuildContext context) {
-    final isLiked = context.select<PostsBloc, bool>(
-      (bloc) => bloc.state.likedIds.contains(post.id),
-    );
+    // Watch the specific post in the list to react to changes (like toggle)
+    // If not found in list (shouldn't happen usually), fallback to passed post
+    final currentPost = context.select<PostsBloc, PostEntity>((bloc) {
+      try {
+        return bloc.state.posts.firstWhere((p) => p.id == post.id);
+      } catch (_) {
+        return post;
+      }
+    });
+
+    final isLiked = currentPost.isLiked;
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Detalle'),
         actions: [
           IconButton(
-            onPressed: () => context.read<PostsBloc>().add(LikeToggled(post)),
+            onPressed:
+                () => context.read<PostsBloc>().add(LikeToggled(currentPost)),
             icon: Icon(isLiked ? Icons.favorite : Icons.favorite_border),
           ),
         ],

@@ -17,12 +17,12 @@ class CommentsState extends Equatable {
       errorMessage = null;
 
   final CommentsStatus status;
-  final List<Comment> comments;
+  final List<CommentEntity> comments;
   final String? errorMessage;
 
   CommentsState copyWith({
     CommentsStatus? status,
-    List<Comment>? comments,
+    List<CommentEntity>? comments,
     String? errorMessage,
   }) {
     return CommentsState(
