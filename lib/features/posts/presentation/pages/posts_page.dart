@@ -14,7 +14,16 @@ class PostsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Posts')),
+      appBar: AppBar(
+        title: const Text('Posts'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () => context.push('/liked-posts'),
+            tooltip: 'Posts Favoritos',
+          ),
+        ],
+      ),
       body: Column(
         children: [
           const SearchBarWidget(),

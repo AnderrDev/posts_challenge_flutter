@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'app_router.dart';
+import 'core/theme/app_theme.dart';
 import 'di/injector.dart';
 import 'features/posts/presentation/bloc/posts/posts_bloc.dart';
 import 'features/posts/presentation/bloc/posts/posts_event.dart';
@@ -15,7 +16,7 @@ class App extends StatelessWidget {
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         title: 'Posts Challenge',
-        theme: ThemeData(useMaterial3: true),
+        theme: AppTheme.light,
         routerConfig: appRouter,
       ),
     );

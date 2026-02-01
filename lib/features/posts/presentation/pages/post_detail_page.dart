@@ -10,35 +10,44 @@ import 'package:posts_challenge/features/posts/presentation/bloc/posts/posts_eve
 import 'package:posts_challenge/features/posts/presentation/widgets/comments_list.dart';
 
 class PostDetailPage extends StatelessWidget {
-  const PostDetailPage({super.key, required this.post});
+  const PostDetailPage({super.key, required this.postId, this.post});
 
-  final PostEntity post;
+  final int postId;
+  final PostEntity? post;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => sl<CommentsCubit>()..load(post.id),
-      child: _PostDetailView(post: post),
+      create: (_) => sl<CommentsCubit>()..load(postId),
+      child: _PostDetailView(postId: postId, post: post),
     );
   }
 }
 
 class _PostDetailView extends StatelessWidget {
-  const _PostDetailView({required this.post});
+  const _PostDetailView({required this.postId, this.post});
 
-  final PostEntity post;
+  final int postId;
+  final PostEntity? post;
 
   @override
   Widget build(BuildContext context) {
     // Watch the specific post in the list to react to changes (like toggle)
     // If not found in list (shouldn't happen usually), fallback to passed post
-    final currentPost = context.select<PostsBloc, PostEntity>((bloc) {
+    final currentPost = context.select<PostsBloc, PostEntity?>((bloc) {
       try {
-        return bloc.state.posts.firstWhere((p) => p.id == post.id);
+        return bloc.state.posts.firstWhere((p) => p.id == postId);
       } catch (_) {
         return post;
       }
     });
+
+    if (currentPost == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Detalle')),
+        body: const Center(child: Text('Post no encontrado')),
+      );
+    }
 
     final isLiked = currentPost.isLiked;
 
@@ -47,8 +56,8 @@ class _PostDetailView extends StatelessWidget {
         title: const Text('Detalle'),
         actions: [
           IconButton(
-            onPressed:
-                () => context.read<PostsBloc>().add(LikeToggled(currentPost)),
+            onPressed: () =>
+                context.read<PostsBloc>().add(LikeToggled(currentPost)),
             icon: Icon(isLiked ? Icons.favorite : Icons.favorite_border),
           ),
         ],
@@ -56,9 +65,12 @@ class _PostDetailView extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(post.title, style: Theme.of(context).textTheme.titleLarge),
+          Text(
+            currentPost.title,
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
           const SizedBox(height: 12),
-          Text(post.body),
+          Text(currentPost.body),
           const SizedBox(height: 24),
           Row(
             children: [

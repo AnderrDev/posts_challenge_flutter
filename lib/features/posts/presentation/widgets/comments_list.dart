@@ -15,19 +15,28 @@ class CommentsList extends StatelessWidget {
     return Column(
       children: comments
           .map((c) {
-            return Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(c.name, style: Theme.of(context).textTheme.titleSmall),
-                    const SizedBox(height: 4),
-                    Text(c.email, style: Theme.of(context).textTheme.bodySmall),
-                    const SizedBox(height: 8),
-                    Text(c.body),
-                  ],
+            return SizedBox(
+              width: double.infinity,
+              child: Card(
+                margin: const EdgeInsets.only(bottom: 12),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        c.name,
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        c.email,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(c.body),
+                    ],
+                  ),
                 ),
               ),
             );
