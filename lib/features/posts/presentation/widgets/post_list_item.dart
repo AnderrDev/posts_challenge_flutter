@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../domain/entities/post.dart';
+import 'package:posts_challenge/features/posts/domain/entities/post.dart';
 
 class PostListItem extends StatelessWidget {
   const PostListItem({

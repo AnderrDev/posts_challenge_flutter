@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../bloc/posts_bloc.dart';
-import '../bloc/posts_event.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_bloc.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_event.dart';
 
 class SearchBarWidget extends StatelessWidget {
   const SearchBarWidget({super.key});

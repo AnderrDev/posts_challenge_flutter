@@ -1,4 +1,4 @@
-import '../../domain/entities/comment.dart';
+import 'package:posts_challenge/features/posts/domain/entities/comment.dart';
 
 class CommentDto {
   const CommentDto({

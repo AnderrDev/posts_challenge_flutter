@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
-import 'features/posts/posts.dart';
+import 'features/posts/domain/entities/post.dart';
+import 'features/posts/presentation/pages/post_detail_page.dart';
+import 'features/posts/presentation/pages/posts_page.dart';
 
 final appRouter = GoRouter(
   routes: [

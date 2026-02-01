@@ -1,8 +1,10 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../../../../core/core.dart';
-import '../../domain/domain.dart';
-import '../datasources/datasources.dart';
+import 'package:posts_challenge/core/error/failure.dart';
+import 'package:posts_challenge/features/posts/domain/entities/post.dart';
+import 'package:posts_challenge/features/posts/domain/entities/comment.dart';
+import 'package:posts_challenge/features/posts/domain/repositories/posts_repository.dart';
+import 'package:posts_challenge/features/posts/data/datasources/posts_remote_datasource.dart';
 
 class PostsRepositoryImpl implements PostsRepository {
   PostsRepositoryImpl(this._remote);

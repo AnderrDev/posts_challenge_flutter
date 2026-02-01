@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:posts_challenge/di/injector.dart';
+import 'package:posts_challenge/features/posts/domain/entities/post.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/comments_cubit.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/comments_state.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_bloc.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_event.dart';
 
-import '../../../../di/injector.dart';
-import '../../domain/entities/post.dart';
-import '../bloc/comments_cubit.dart';
-import '../bloc/comments_state.dart';
-import '../bloc/posts_bloc.dart';
-import '../bloc/posts_event.dart';
-
-import '../widgets/comments_list.dart';
+import 'package:posts_challenge/features/posts/presentation/widgets/comments_list.dart';
 
 class PostDetailPage extends StatelessWidget {
   const PostDetailPage({super.key, required this.post});

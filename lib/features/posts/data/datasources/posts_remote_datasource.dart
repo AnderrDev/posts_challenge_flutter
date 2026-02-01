@@ -1,7 +1,10 @@
 import 'package:fpdart/fpdart.dart';
 
-import '../../../../core/core.dart';
-import '../dtos/dtos.dart';
+import 'package:posts_challenge/core/error/failure.dart';
+import 'package:posts_challenge/core/network/http_client.dart';
+import 'package:posts_challenge/core/network/endpoints.dart';
+import 'package:posts_challenge/features/posts/data/dtos/post_dto.dart';
+import 'package:posts_challenge/features/posts/data/dtos/comment_dto.dart';
 
 abstract interface class PostsRemoteDatasource {
   Future<Either<Failure, List<PostDto>>> fetchPosts();

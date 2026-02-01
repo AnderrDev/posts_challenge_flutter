@@ -1,7 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
-import '../core/core.dart';
-import '../features/posts/posts.dart';
+import 'package:posts_challenge/core/network/dio_client.dart';
+import 'package:posts_challenge/core/network/dio_http_client.dart';
+import 'package:posts_challenge/core/network/http_client.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/comments_cubit.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_bloc.dart';
+import 'package:posts_challenge/features/posts/data/datasources/posts_remote_datasource.dart';
+import 'package:posts_challenge/features/posts/data/repositories/posts_repository_impl.dart';
+import 'package:posts_challenge/features/posts/domain/repositories/posts_repository.dart';
+import 'package:posts_challenge/features/posts/domain/usecases/get_comments_by_post.dart';
+import 'package:posts_challenge/features/posts/domain/usecases/get_posts.dart';
 
 final sl = GetIt.instance;
 

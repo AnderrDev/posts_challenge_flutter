@@ -1,4 +1,4 @@
-import '../../domain/entities/post.dart';
+import 'package:posts_challenge/features/posts/domain/entities/post.dart';
 
 class PostDto {
   const PostDto({

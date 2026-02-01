@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:fpdart/fpdart.dart';
-import '../error/failure.dart';
+import 'package:posts_challenge/core/error/failure.dart';
 import 'http_client.dart';
 
 class DioHttpClient implements HttpClient {

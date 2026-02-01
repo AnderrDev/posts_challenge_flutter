@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'app_router.dart';
 import 'di/injector.dart';
-import 'features/posts/posts.dart';
+import 'features/posts/presentation/bloc/posts_bloc.dart';
+import 'features/posts/presentation/bloc/posts_event.dart';
 
 class App extends StatelessWidget {
   const App({super.key});

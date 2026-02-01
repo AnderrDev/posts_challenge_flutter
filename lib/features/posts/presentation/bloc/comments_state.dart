@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/comment.dart';
+import 'package:posts_challenge/features/posts/domain/entities/comment.dart';
 
 enum CommentsStatus { initial, loading, success, failure }
 

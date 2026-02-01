@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/error/failure.dart';
-import '../../domain/usecases/get_comments_by_post.dart';
+import 'package:posts_challenge/core/error/failure.dart';
+import 'package:posts_challenge/features/posts/domain/usecases/get_comments_by_post.dart';
 import 'comments_state.dart';
 
 class CommentsCubit extends Cubit<CommentsState> {

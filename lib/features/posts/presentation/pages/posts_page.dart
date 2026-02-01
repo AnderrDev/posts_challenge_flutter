@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../bloc/bloc.dart';
-import '../widgets/widgets.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_bloc.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_event.dart';
+import 'package:posts_challenge/features/posts/presentation/bloc/posts_state.dart';
+import 'package:posts_challenge/features/posts/presentation/widgets/post_list_item.dart';
+import 'package:posts_challenge/features/posts/presentation/widgets/search_bar.dart';
 
 class PostsPage extends StatelessWidget {
   const PostsPage({super.key});

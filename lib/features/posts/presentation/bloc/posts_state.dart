@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-import '../../domain/entities/post.dart';
+import 'package:posts_challenge/features/posts/domain/entities/post.dart';
 
 enum PostsStatus { initial, loading, success, failure }
 

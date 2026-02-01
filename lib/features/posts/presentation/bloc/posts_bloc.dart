@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../../core/core.dart';
-import '../../domain/domain.dart';
+import 'package:posts_challenge/core/error/failure.dart';
+import 'package:posts_challenge/features/posts/domain/entities/post.dart';
+import 'package:posts_challenge/features/posts/domain/usecases/get_posts.dart';
 import 'posts_event.dart';
 import 'posts_state.dart';
 
