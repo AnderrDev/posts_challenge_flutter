@@ -42,8 +42,10 @@ class PostsPage extends StatelessWidget {
                       return const Center(child: Text('No hay resultados'));
                     }
                     return ListView.separated(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
                       itemCount: state.filtered.length,
-                      separatorBuilder: (_, __) => const Divider(height: 1),
+                      separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
                         final post = state.filtered[index];
 

@@ -40,8 +40,9 @@ class LikedPostsPage extends StatelessWidget {
           }
 
           return ListView.separated(
+            padding: const EdgeInsets.all(16),
             itemCount: likedPosts.length,
-            separatorBuilder: (_, __) => const Divider(height: 1),
+            separatorBuilder: (_, __) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
               final post = likedPosts[index];
 
