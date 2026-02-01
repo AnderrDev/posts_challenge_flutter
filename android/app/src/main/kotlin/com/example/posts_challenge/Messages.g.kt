@@ -15,6 +15,9 @@ import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 private object MessagesPigeonUtils {
 
+  fun createConnectionError(channelName: String): FlutterError {
+    return FlutterError("channel-error",  "Unable to establish connection on channel: '$channelName'.", "")  }
+
   fun wrapResult(result: Any?): List<Any?> {
     return listOf(result)
   }
@@ -81,20 +84,23 @@ class FlutterError (
 /** Generated class from Pigeon that represents data sent in messages. */
 data class NotificationPayload (
   val title: String? = null,
-  val body: String? = null
+  val body: String? = null,
+  val postId: Long? = null
 )
  {
   companion object {
     fun fromList(pigeonVar_list: List<Any?>): NotificationPayload {
       val title = pigeonVar_list[0] as String?
       val body = pigeonVar_list[1] as String?
-      return NotificationPayload(title, body)
+      val postId = pigeonVar_list[2] as Long?
+      return NotificationPayload(title, body, postId)
     }
   }
   fun toList(): List<Any?> {
     return listOf(
       title,
       body,
+      postId,
     )
   }
   override fun equals(other: Any?): Boolean {
@@ -131,6 +137,32 @@ private open class MessagesPigeonCodec : StandardMessageCodec() {
 }
 
 
+/** Generated class from Pigeon that represents Flutter messages that can be called from Kotlin. */
+class NotificationCallbackApi(private val binaryMessenger: BinaryMessenger, private val messageChannelSuffix: String = "") {
+  companion object {
+    /** The codec used by NotificationCallbackApi. */
+    val codec: MessageCodec<Any?> by lazy {
+      MessagesPigeonCodec()
+    }
+  }
+  fun onNotificationTapped(postIdArg: Long, callback: (Result<Unit>) -> Unit)
+{
+    val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
+    val channelName = "dev.flutter.pigeon.posts_challenge.NotificationCallbackApi.onNotificationTapped$separatedMessageChannelSuffix"
+    val channel = BasicMessageChannel<Any?>(binaryMessenger, channelName, codec)
+    channel.send(listOf(postIdArg)) {
+      if (it is List<*>) {
+        if (it.size > 1) {
+          callback(Result.failure(FlutterError(it[0] as String, it[1] as String, it[2] as String?)))
+        } else {
+          callback(Result.success(Unit))
+        }
+      } else {
+        callback(Result.failure(MessagesPigeonUtils.createConnectionError(channelName)))
+      } 
+    }
+  }
+}
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface NotificationApi {
   fun showNotification(payload: NotificationPayload)

@@ -74,6 +74,7 @@ class PostsRepositoryImpl implements PostsRepository {
           await _notifications.showNotification(
             title: post.title,
             body: 'Has dado like a este post',
+            postId: post.id,
           );
         }
       }

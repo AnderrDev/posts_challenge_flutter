@@ -1,7 +1,11 @@
 import 'package:posts_challenge/core/native/generated/messages.g.dart';
 
 abstract interface class SmartNotificationDatasource {
-  Future<void> showNotification({required String title, required String body});
+  Future<void> showNotification({
+    required String title,
+    required String body,
+    required int postId,
+  });
   Future<bool> requestPermission();
 }
 
@@ -19,10 +23,11 @@ class SmartNotificationDatasourceImpl implements SmartNotificationDatasource {
   Future<void> showNotification({
     required String title,
     required String body,
+    required int postId,
   }) async {
     try {
       await _api.showNotification(
-        NotificationPayload(title: title, body: body),
+        NotificationPayload(title: title, body: body, postId: postId),
       );
     } catch (e) {
       // If native call fails, we might just log it, but shouldn't crash the app

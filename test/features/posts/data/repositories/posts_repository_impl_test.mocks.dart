@@ -130,11 +130,13 @@ class MockSmartNotificationDatasource extends _i1.Mock
   _i3.Future<void> showNotification({
     required String? title,
     required String? body,
+    required int? postId,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#showNotification, [], {
               #title: title,
               #body: body,
+              #postId: postId,
             }),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),

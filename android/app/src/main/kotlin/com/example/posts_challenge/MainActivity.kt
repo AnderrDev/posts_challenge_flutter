@@ -16,6 +16,7 @@ class MainActivity : FlutterActivity(), NotificationApi, NotificationPermissionA
     }
 
     private var pendingResult: ((Result<Boolean>) -> Unit)? = null
+    private var callbackApi: NotificationCallbackApi? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
@@ -23,19 +24,52 @@ class MainActivity : FlutterActivity(), NotificationApi, NotificationPermissionA
         val binaryMessenger = flutterEngine.dartExecutor.binaryMessenger
         NotificationApi.setUp(binaryMessenger, this)
         NotificationPermissionApi.setUp(binaryMessenger, this)
+        callbackApi = NotificationCallbackApi(binaryMessenger)
+        
         createNotificationChannel()
     }
 
     override fun showNotification(payload: NotificationPayload) {
+        val intent = android.content.Intent(this, MainActivity::class.java).apply {
+            flags = android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
+            putExtra("postId", payload.postId?.toLong())
+        }
+        val pendingIntent = android.app.PendingIntent.getActivity(
+            this,
+            0,
+            intent,
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+        )
+
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle(payload.title)
             .setContentText(payload.body)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
 
         val notificationManager: NotificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, builder.build())
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        handleIntent(intent)
+    }
+
+    // Also check onCreate for when app is launched from scratch
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+        super.onCreate(savedInstanceState)
+        handleIntent(intent)
+    }
+
+    private fun handleIntent(intent: android.content.Intent) {
+        val postId = intent.getLongExtra("postId", -1L)
+        if (postId != -1L) {
+            callbackApi?.onNotificationTapped(postId) {}
+        }
     }
 
     private fun createNotificationChannel() {

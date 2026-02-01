@@ -141,6 +141,7 @@ void main() {
           mockNotifications.showNotification(
             title: anyNamed('title'),
             body: anyNamed('body'),
+            postId: anyNamed('postId'),
           ),
         ).thenAnswer((_) async => Future.value());
 
@@ -154,6 +155,7 @@ void main() {
           mockNotifications.showNotification(
             title: 'Title',
             body: anyNamed('body'),
+            postId: tPostId,
           ),
         );
         expect(result, const Right<Failure, void>(null));

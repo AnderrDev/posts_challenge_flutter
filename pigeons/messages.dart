@@ -14,6 +14,12 @@ import 'package:pigeon/pigeon.dart';
 class NotificationPayload {
   String? title;
   String? body;
+  int? postId;
+}
+
+@FlutterApi()
+abstract class NotificationCallbackApi {
+  void onNotificationTapped(int postId);
 }
 
 @HostApi()

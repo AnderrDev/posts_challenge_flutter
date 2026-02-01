@@ -34,7 +34,10 @@ class _PostsPageState extends State<PostsPage> {
 
   void _onScroll() {
     if (_isBottom) {
-      context.read<PostsBloc>().add(const FetchPosts());
+      final bloc = context.read<PostsBloc>();
+      if (bloc.state.query.isEmpty) {
+        bloc.add(const FetchPosts());
+      }
     }
   }
 
@@ -81,7 +84,7 @@ class _PostsPageState extends State<PostsPage> {
                       controller: _scrollController,
                       physics: const BouncingScrollPhysics(),
                       padding: const EdgeInsets.all(16),
-                      itemCount: state.hasReachedMax
+                      itemCount: state.hasReachedMax || state.query.isNotEmpty
                           ? state.filtered.length
                           : state.filtered.length + 1,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),

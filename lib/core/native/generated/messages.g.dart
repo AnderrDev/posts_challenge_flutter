@@ -14,6 +14,16 @@ PlatformException _createConnectionError(String channelName) {
     message: 'Unable to establish connection on channel: "$channelName".',
   );
 }
+
+List<Object?> wrapResponse({Object? result, PlatformException? error, bool empty = false}) {
+  if (empty) {
+    return <Object?>[];
+  }
+  if (error == null) {
+    return <Object?>[result];
+  }
+  return <Object?>[error.code, error.message, error.details];
+}
 bool _deepEquals(Object? a, Object? b) {
   if (a is List && b is List) {
     return a.length == b.length &&
@@ -33,16 +43,20 @@ class NotificationPayload {
   NotificationPayload({
     this.title,
     this.body,
+    this.postId,
   });
 
   String? title;
 
   String? body;
 
+  int? postId;
+
   List<Object?> _toList() {
     return <Object?>[
       title,
       body,
+      postId,
     ];
   }
 
@@ -54,6 +68,7 @@ class NotificationPayload {
     return NotificationPayload(
       title: result[0] as String?,
       body: result[1] as String?,
+      postId: result[2] as int?,
     );
   }
 
@@ -98,6 +113,41 @@ class _PigeonCodec extends StandardMessageCodec {
         return NotificationPayload.decode(readValue(buffer)!);
       default:
         return super.readValueOfType(type, buffer);
+    }
+  }
+}
+
+abstract class NotificationCallbackApi {
+  static const MessageCodec<Object?> pigeonChannelCodec = _PigeonCodec();
+
+  void onNotificationTapped(int postId);
+
+  static void setUp(NotificationCallbackApi? api, {BinaryMessenger? binaryMessenger, String messageChannelSuffix = '',}) {
+    messageChannelSuffix = messageChannelSuffix.isNotEmpty ? '.$messageChannelSuffix' : '';
+    {
+      final pigeonVar_channel = BasicMessageChannel<Object?>(
+          'dev.flutter.pigeon.posts_challenge.NotificationCallbackApi.onNotificationTapped$messageChannelSuffix', pigeonChannelCodec,
+          binaryMessenger: binaryMessenger);
+      if (api == null) {
+        pigeonVar_channel.setMessageHandler(null);
+      } else {
+        pigeonVar_channel.setMessageHandler((Object? message) async {
+          assert(message != null,
+          'Argument for dev.flutter.pigeon.posts_challenge.NotificationCallbackApi.onNotificationTapped was null.');
+          final List<Object?> args = (message as List<Object?>?)!;
+          final int? arg_postId = (args[0] as int?);
+          assert(arg_postId != null,
+              'Argument for dev.flutter.pigeon.posts_challenge.NotificationCallbackApi.onNotificationTapped was null, expected non-null int.');
+          try {
+            api.onNotificationTapped(arg_postId!);
+            return wrapResponse(empty: true);
+          } on PlatformException catch (e) {
+            return wrapResponse(error: e);
+          }          catch (e) {
+            return wrapResponse(error: PlatformException(code: 'error', message: e.toString()));
+          }
+        });
+      }
     }
   }
 }
