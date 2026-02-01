@@ -1,63 +1,82 @@
 # Posts Challenge
 
-Mobile challenge demonstrating Flutter advanced concepts including Clean Architecture, BLoC, and Native Integration via Pigeon.
+Aplicación Flutter para visualizar posts y comentarios, demostrando buenas prácticas de desarrollo, manejo de estado robusto e integración con código nativo.
 
-## Architecture
+## 🏗 Arquitectura
 
-This project follows **Clean Architecture** principles to separate concerns into independent layers:
+El proyecto sigue los principios de **Clean Architecture** para garantizar la separación de incertidumbres, testabilidad y escalabilidad.
 
-- **Domain Layer**: Contains Entities, Repositories (interfaces), and Use Cases. Pure Dart, no Flutter dependencies.
-- **Data Layer**: Implements Repositories and defines Datasources (Remote, Local, Native). Handles data fetching and persistence.
-- **Presentation Layer**: Contains UI (Pages, Widgets) and State Management (BLoC/Cubit).
-- **Injection**: Uses `get_it` for dependency injection (`lib/di/injector.dart`).
+### Capas:
+1.  **Domain (Dominio)**:
+    *   Núcleo de la aplicación.
+    *   Contiene **Entities** (objetos de negocio), **Use Cases** (lógica de negocio) y **Repository Interfaces** (contratos de datos).
+    *   Es independiente de cualquier dependencia externa (Flutter, DB, API).
 
-## Features
+2.  **Data (Datos)**:
+    *   Implementación de la capa de dominio.
+    *   **Repositories Implementation**: Implementa las interfaces del dominio.
+    *   **Data Sources**:
+        *   _Remote_: Comunicación con APIs (JSONPlaceholder).
+        *   _Local_: Persistencia de datos (SharedPreferences, Bases de datos).
+    *   **Models**: DTOs que extienden de las entidades para manejar la serialización/deserialización JSON.
 
-- **Posts List**: Fetched from JSONPlaceholder (with Lazy Loading support).
-- **Search**: Local filtering of posts.
-- **Post Detail**: Shows post content and comments.
-- **Smart Notifications** (Native Integration):
-    - When you "Like" a post, a native local notification is triggered ("Te ha gustado: ...").
-    - Implemented using **Pigeon** for type-safe communication (no manual MethodChannels).
-    - **Android**: Uses `NotificationChannel` and `NotificationManager` (Kotlin).
-    - **iOS**: Uses `UNUserNotificationCenter` (Swift).
+3.  **Presentation (Presentación)**:
+    *   Manejo de la UI y el estado.
+    *   **BLoC/Cubit**: Patrón de gestión de estado utilizado para separar la lógica de presentación de la UI.
+    *   **Pages & Widgets**: Componentes visuales construidos con Flutter.
 
-## Setup & Running
+### Patrones y Herramientas:
+*   **MVVM / BLoC**: Gestión reactiva del estado.
+*   **Dependency Injection**: Uso de `get_it` e `injectable` para el manejo de dependencias.
+*   **Functional Programming**: Uso de `fpdart` (`Either`) para un manejo de errores robusto.
 
-1. **Install Dependencies**:
-   ```bash
-   flutter pub get
-   ```
-2. **Run Code Generation** (if needed for mocks/pigeon):
-   ```bash
-   flutter pub run build_runner build
-   # Pigeon command used:
-   # flutter pub run pigeon --input pigeons/messages.dart
-   ```
-3. **Run App**:
-   ```bash
-   flutter run
-   ```
+## 🕊 Pigeon Setup
 
-## Pigeon Setup
+Este proyecto utiliza **Pigeon** para la comunicación segura y tipada entre Flutter y el código nativo (Android/iOS), específicamente para el manejo de Notificaciones Locales y permisos.
 
-The native communication is defined in `pigeons/messages.dart`.
-To regenerate the native code after changes:
+El archivo de definición se encuentra en: `pigeons/messages.dart`.
+
+### Generar código nativo y Dart:
+
+Ejecuta el siguiente comando en la raíz del proyecto para regenerar los archivos puente si modificas `messages.dart`:
 
 ```bash
-flutter pub run pigeon --input pigeons/messages.dart
+dart run pigeon --input pigeons/messages.dart
 ```
 
-## AI Usage
+Esto actualizará automáticamente:
+*   `lib/core/native/generated/messages.g.dart` (Dart)
+*   `android/app/src/main/kotlin/com/example/posts_challenge/Messages.g.kt` (Kotlin)
+*   `ios/Runner/Messages.g.swift` (Swift)
 
-Tools used: **Agentic AI Assistant** (Google Deepmind).
-- **Native Integration**: AI generated the Kotlin and Swift code for the notification logic based on the Pigeon definition.
-- **Refactoring**: AI helped refactor the `toggleLike` repository method to accept `PostEntity` to pass the title to the native layer.
-- **Testing**: AI updated the unit tests to mock the new native datasource.
+## 🚀 Setup General
 
-## Testing
+### Prerrequisitos
+*   Flutter SDK (Stable)
+*   Cocoapods (para iOS)
+*   Android Studio / Xcode
 
-Run unit tests:
-```bash
-flutter test
-```
+### Instalación
+
+1.  **Clonar el repositorio y obtener dependencias:**
+    ```bash
+    flutter pub get
+    ```
+
+2.  **Generar código (para JsonSerializable, Freezed, Mockito, etc.):**
+    ```bash
+    dart run build_runner build --delete-conflicting-outputs
+    ```
+
+3.  **Ejecutar la aplicación:**
+    ```bash
+    flutter run
+    ```
+
+## 🤖 Uso de IA
+
+Este proyecto ha sido desarrollado asistido por Inteligencia Artificial para:
+*   **Refactorización**: Optimización de imports y estructura de carpetas.
+*   **Testing**: Generación de tests unitarios y solución de errores en mocks.
+*   **Debugging**: Identificación y corrección de errores de compilación nativos (Kotlin/Swift) y lógica de UI (Scroll infinito).
+*   **Documentación**: Generación de este README y traducción de comentarios.
