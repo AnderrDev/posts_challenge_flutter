@@ -15,6 +15,7 @@ import 'package:posts_challenge/features/posts/data/datasources/posts_local_data
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:posts_challenge/features/posts/domain/usecases/toggle_post_like.dart';
+import 'package:posts_challenge/features/posts/data/datasources/smart_notification_datasource.dart';
 
 final sl = GetIt.instance;
 
@@ -34,12 +35,16 @@ Future<void> configureDependencies() async {
   sl.registerLazySingleton<PostsLocalDataSource>(
     () => PostsLocalDataSourceImpl(sl<SharedPreferences>()),
   );
+  sl.registerLazySingleton<SmartNotificationDatasource>(
+    () => SmartNotificationDatasourceImpl(),
+  );
 
   // Repositories
   sl.registerLazySingleton<PostsRepository>(
     () => PostsRepositoryImpl(
       sl<PostsRemoteDatasource>(),
       sl<PostsLocalDataSource>(),
+      sl<SmartNotificationDatasource>(),
     ),
   );
 

@@ -10,5 +10,5 @@ abstract interface class PostsRepository {
     int limit = 10,
   });
   Future<Either<Failure, List<CommentEntity>>> getCommentsByPost(int postId);
-  Future<Either<Failure, void>> toggleLike(int postId);
+  Future<Either<Failure, void>> toggleLike(PostEntity post);
 }

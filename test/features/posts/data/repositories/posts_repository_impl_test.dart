@@ -9,14 +9,20 @@ import 'package:posts_challenge/features/posts/data/models/post_model.dart';
 import 'package:posts_challenge/features/posts/data/models/comment_model.dart';
 import 'package:posts_challenge/core/error/failure.dart';
 import 'package:posts_challenge/features/posts/domain/entities/post.dart';
+import 'package:posts_challenge/features/posts/data/datasources/smart_notification_datasource.dart';
 
 import 'posts_repository_impl_test.mocks.dart';
 
-@GenerateMocks([PostsRemoteDatasource, PostsLocalDataSource])
+@GenerateMocks([
+  PostsRemoteDatasource,
+  PostsLocalDataSource,
+  SmartNotificationDatasource,
+])
 void main() {
   late PostsRepositoryImpl repository;
   late MockPostsRemoteDatasource mockRemote;
   late MockPostsLocalDataSource mockLocal;
+  late MockSmartNotificationDatasource mockNotifications;
 
   setUpAll(() {
     provideDummy<Either<Failure, List<PostModel>>>(const Left(ServerFailure()));
@@ -28,7 +34,8 @@ void main() {
   setUp(() {
     mockRemote = MockPostsRemoteDatasource();
     mockLocal = MockPostsLocalDataSource();
-    repository = PostsRepositoryImpl(mockRemote, mockLocal);
+    mockNotifications = MockSmartNotificationDatasource();
+    repository = PostsRepositoryImpl(mockRemote, mockLocal, mockNotifications);
   });
 
   const tPostModel = PostModel(
@@ -111,20 +118,47 @@ void main() {
 
   group('toggleLike', () {
     const tPostId = 1;
+    const tPost = PostEntity(
+      id: tPostId,
+      userId: 1,
+      title: 'Title',
+      body: 'Body',
+      isLiked: false,
+    );
 
-    test('should call saveLikedPostId when id is not liked', () async {
-      // arrange
-      when(mockLocal.getLikedPostIds()).thenAnswer((_) async => []);
-      when(
-        mockLocal.saveLikedPostId(any),
-      ).thenAnswer((_) async => Future.value());
-      // act
-      final result = await repository.toggleLike(tPostId);
-      // assert
-      verify(mockLocal.getLikedPostIds());
-      verify(mockLocal.saveLikedPostId(tPostId));
-      expect(result, const Right<Failure, void>(null));
-    });
+    test(
+      'should call saveLikedPostId and showNotification when id is not liked',
+      () async {
+        // arrange
+        when(mockLocal.getLikedPostIds()).thenAnswer((_) async => []);
+        when(
+          mockLocal.saveLikedPostId(any),
+        ).thenAnswer((_) async => Future.value());
+        when(
+          mockNotifications.requestPermission(),
+        ).thenAnswer((_) async => true);
+        when(
+          mockNotifications.showNotification(
+            title: anyNamed('title'),
+            body: anyNamed('body'),
+          ),
+        ).thenAnswer((_) async => Future.value());
+
+        // act
+        final result = await repository.toggleLike(tPost);
+        // assert
+        verify(mockLocal.getLikedPostIds());
+        verify(mockLocal.saveLikedPostId(tPostId));
+        verify(mockNotifications.requestPermission());
+        verify(
+          mockNotifications.showNotification(
+            title: 'Title',
+            body: anyNamed('body'),
+          ),
+        );
+        expect(result, const Right<Failure, void>(null));
+      },
+    );
 
     test('should call removeLikedPostId when id is liked', () async {
       // arrange
@@ -133,10 +167,11 @@ void main() {
         mockLocal.removeLikedPostId(any),
       ).thenAnswer((_) async => Future.value());
       // act
-      final result = await repository.toggleLike(tPostId);
+      final result = await repository.toggleLike(tPost);
       // assert
       verify(mockLocal.getLikedPostIds());
       verify(mockLocal.removeLikedPostId(tPostId));
+      verifyZeroInteractions(mockNotifications);
       expect(result, const Right<Failure, void>(null));
     });
   });

@@ -190,7 +190,7 @@ void main() {
       ),
     ],
     verify: (_) {
-      verify(mockTogglePostLike(tPost.id));
+      verify(mockTogglePostLike(tPost));
     },
   );
 
@@ -233,7 +233,7 @@ void main() {
       ),
     ],
     verify: (_) {
-      verify(mockTogglePostLike(tPost.id));
+      verify(mockTogglePostLike(tPost));
     },
   );
 }

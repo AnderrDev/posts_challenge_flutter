@@ -7,11 +7,14 @@ import 'package:posts_challenge/features/posts/domain/repositories/posts_reposit
 import 'package:posts_challenge/features/posts/data/datasources/posts_local_datasource.dart';
 import 'package:posts_challenge/features/posts/data/datasources/posts_remote_datasource.dart';
 
+import 'package:posts_challenge/features/posts/data/datasources/smart_notification_datasource.dart';
+
 class PostsRepositoryImpl implements PostsRepository {
-  PostsRepositoryImpl(this._remote, this._local);
+  PostsRepositoryImpl(this._remote, this._local, this._notifications);
 
   final PostsRemoteDatasource _remote;
   final PostsLocalDataSource _local;
+  final SmartNotificationDatasource _notifications;
 
   @override
   Future<Either<Failure, List<PostEntity>>> getPosts({
@@ -53,14 +56,26 @@ class PostsRepositoryImpl implements PostsRepository {
   }
 
   @override
-  Future<Either<Failure, void>> toggleLike(int postId) async {
+  Future<Either<Failure, void>> toggleLike(PostEntity post) async {
     try {
       final likedIds = await _local.getLikedPostIds();
-      final idStr = postId.toString();
+      final idStr = post.id.toString();
       if (likedIds.contains(idStr)) {
-        await _local.removeLikedPostId(postId);
+        await _local.removeLikedPostId(post.id);
       } else {
-        await _local.saveLikedPostId(postId);
+        await _local.saveLikedPostId(post.id);
+
+        // Try to request permission if needed (this is a simple approach)
+        // ideally we check if we have permission first
+        // But for this challenge, we can try requesting which is idempotent-ish or check
+        final hasPermission = await _notifications.requestPermission();
+
+        if (hasPermission) {
+          await _notifications.showNotification(
+            title: post.title,
+            body: 'Has dado like a este post',
+          );
+        }
       }
       return const Right(null);
     } catch (e) {

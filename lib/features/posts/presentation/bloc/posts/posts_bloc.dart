@@ -99,7 +99,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
     );
 
     // Persistence
-    final result = await _togglePostLike(postToToggle.id);
+    final result = await _togglePostLike(postToToggle);
 
     result.fold(
       (failure) {

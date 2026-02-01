@@ -13,6 +13,8 @@ import 'package:posts_challenge/features/posts/data/datasources/posts_local_data
     as _i9;
 import 'package:posts_challenge/features/posts/data/datasources/posts_remote_datasource.dart'
     as _i2;
+import 'package:posts_challenge/features/posts/data/datasources/smart_notification_datasource.dart'
+    as _i10;
 import 'package:posts_challenge/features/posts/data/models/comment_model.dart'
     as _i8;
 import 'package:posts_challenge/features/posts/data/models/post_model.dart'
@@ -113,4 +115,37 @@ class MockPostsLocalDataSource extends _i1.Mock
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
+}
+
+/// A class which mocks [SmartNotificationDatasource].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockSmartNotificationDatasource extends _i1.Mock
+    implements _i10.SmartNotificationDatasource {
+  MockSmartNotificationDatasource() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i3.Future<void> showNotification({
+    required String? title,
+    required String? body,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#showNotification, [], {
+              #title: title,
+              #body: body,
+            }),
+            returnValue: _i3.Future<void>.value(),
+            returnValueForMissingStub: _i3.Future<void>.value(),
+          )
+          as _i3.Future<void>);
+
+  @override
+  _i3.Future<bool> requestPermission() =>
+      (super.noSuchMethod(
+            Invocation.method(#requestPermission, []),
+            returnValue: _i3.Future<bool>.value(false),
+          )
+          as _i3.Future<bool>);
 }

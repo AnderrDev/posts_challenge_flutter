@@ -66,13 +66,13 @@ class MockTogglePostLike extends _i1.Mock implements _i8.TogglePostLike {
   }
 
   @override
-  _i3.Future<_i4.Either<_i5.Failure, void>> call(int? postId) =>
+  _i3.Future<_i4.Either<_i5.Failure, void>> call(_i6.PostEntity? post) =>
       (super.noSuchMethod(
-            Invocation.method(#call, [postId]),
+            Invocation.method(#call, [post]),
             returnValue: _i3.Future<_i4.Either<_i5.Failure, void>>.value(
               _i7.dummyValue<_i4.Either<_i5.Failure, void>>(
                 this,
-                Invocation.method(#call, [postId]),
+                Invocation.method(#call, [post]),
               ),
             ),
           )

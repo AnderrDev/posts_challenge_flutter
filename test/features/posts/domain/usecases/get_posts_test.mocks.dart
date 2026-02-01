@@ -76,13 +76,13 @@ class MockPostsRepository extends _i1.Mock implements _i2.PostsRepository {
           as _i3.Future<_i4.Either<_i5.Failure, List<_i8.CommentEntity>>>);
 
   @override
-  _i3.Future<_i4.Either<_i5.Failure, void>> toggleLike(int? postId) =>
+  _i3.Future<_i4.Either<_i5.Failure, void>> toggleLike(_i6.PostEntity? post) =>
       (super.noSuchMethod(
-            Invocation.method(#toggleLike, [postId]),
+            Invocation.method(#toggleLike, [post]),
             returnValue: _i3.Future<_i4.Either<_i5.Failure, void>>.value(
               _i7.dummyValue<_i4.Either<_i5.Failure, void>>(
                 this,
-                Invocation.method(#toggleLike, [postId]),
+                Invocation.method(#toggleLike, [post]),
               ),
             ),
           )
