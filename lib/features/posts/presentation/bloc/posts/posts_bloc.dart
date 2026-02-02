@@ -40,7 +40,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
       emit(state.copyWith(status: PostsStatus.loading, errorMessage: null));
     }
 
-    final result = await _getPosts(page: state.page, limit: 10);
+    final result = await _getPosts(page: state.page, limit: 20);
 
     result.fold(
       (failure) => emit(
@@ -53,7 +53,7 @@ class PostsBloc extends Bloc<PostsEvent, PostsState> {
         final allPosts = event.refresh
             ? newPosts
             : [...state.posts, ...newPosts];
-        final reachedMax = newPosts.length < 10;
+        final reachedMax = newPosts.length < 20;
 
         emit(
           state.copyWith(

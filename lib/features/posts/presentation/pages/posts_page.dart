@@ -35,7 +35,9 @@ class _PostsPageState extends State<PostsPage> {
   void _onScroll() {
     if (_isBottom) {
       final bloc = context.read<PostsBloc>();
-      if (bloc.state.query.isEmpty) {
+      if (bloc.state.query.isEmpty &&
+          !bloc.state.hasReachedMax &&
+          bloc.state.status != PostsStatus.loading) {
         bloc.add(const FetchPosts());
       }
     }
